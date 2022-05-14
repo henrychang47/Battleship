@@ -1,0 +1,178 @@
+* {
+  padding: 0;
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+#messageBox {
+  margin: 20px auto;
+  width: 20rem;
+  height: 10vh;
+  border: 2px solid black;
+  font-size: 3rem;
+  line-height: 10vh;
+}
+
+.boardAreas {
+  width: 100vw;
+  height: 70vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 100px;
+}
+
+.boardTitle {
+  margin-bottom: 10px;
+}
+
+.gameBoard {
+  display: grid;
+  box-sizing: border-box;
+  width: 600px;
+  height: 600px;
+  grid-template-rows: repeat(10, 1fr);
+  grid-template-columns: repeat(10, 1fr);
+  border: 2px solid black;
+}
+
+.gameBoard-grid {
+  border: 2px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+#pcArea {
+  /* transform: scale(0); */
+  /* display: none; */
+}
+
+#shipsArea {
+  display: none;
+}
+
+#playerShips {
+  box-sizing: border-box;
+  border: 2px solid black;
+  width: 600px;
+  height: 600px;
+  display: grid;
+  grid-template-rows: 80% 15%;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 10px;
+  gap: 10px 10px;
+}
+
+.playerShips-display {
+  grid-area: 1 / 1 / 2 / 4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.playerShips-display .ship {
+  box-sizing: border-box;
+  border-collapse: collapse;
+  border: 1px solid black;
+  transition: transform 0.2s;
+}
+
+.playerShips-display .ship.rotated {
+  transform: rotate(90deg);
+}
+
+.playerShips-display .ship div {
+  width: 70px;
+  height: 70px;
+  border: 1px solid black;
+}
+
+.playerShips-display .ship div.placed {
+  background-color: rgb(29 255 155 / 76%);
+}
+
+.playerShips-display .ship div.unplaced {
+  background-color: rgb(255 29 29 / 76%);
+}
+
+.playerShips-button {
+  grid-row: 2;
+}
+
+#pcBoard .unknown:hover {
+  background-color: rgb(251, 91, 179);
+}
+
+.gameBoard-grid.unknown {
+  background-color: cornflowerblue;
+}
+
+.gameBoard-grid.hit {
+  background-color: darksalmon;
+}
+
+.gameBoard-grid.miss {
+  background-color: darkgrey;
+}
+
+.gameBoard-grid.canPlace {
+  background-color: rgb(29 255 155 / 76%);
+  /* border-color: rgb(29 255 155 / 76%); */
+}
+
+.gameBoard-grid.canNotPlace {
+  background-color: rgb(255 29 29 / 76%);
+}
+
+#startButton {
+  border: 2px solid black;
+  font-size: 2rem;
+  width: 10rem;
+  padding: 5px 20px;
+  margin: auto;
+  cursor: pointer;
+  background-color: white;
+  transition: transform 0.2s;
+}
+
+#startButton:hover {
+  transform: scale(1.1);
+}
+
+#startButton:disabled {
+  border-color: rgb(173, 171, 171);
+}
+
+@media (max-width:1315px) {
+  #messageBox {
+    margin: 20px auto;
+    width: 20rem;
+    height: 8vh;
+    border: 2px solid black;
+    font-size: 2.7rem;
+    line-height: 8vh;
+  }
+
+  .gameBoard {
+    width: 500px;
+    height: 500px;
+  }
+
+  .boardAreas {
+    width: 100vw;
+    height: 55vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+}

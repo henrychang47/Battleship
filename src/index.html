@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Battleship</title>
+</head>
+
+<body>
+  <div id="messageBox"></div>
+  <div class="boardAreas">
+    <div id="playerArea">
+      <h3 class="boardTitle">Your Board</h3>
+      <div id="playerBoard" class="gameBoard"></div>
+    </div>
+    <div id="pcArea">
+      <h3 class="boardTitle">Enemy's Board</h3>
+      <div id="pcBoard" class="gameBoard"></div>
+    </div>
+    <div id="shipsArea">
+      <h3 class="boardTitle">
+        Your Ships(<span class="shipNumber"></span>)
+      </h3>
+      <div id="playerShips">
+        <div class="playerShips-display">
+          <div class="ship">
+          </div>
+        </div>
+        <button class="playerShips-button prevButton">Prev</button>
+        <button class="playerShips-button rotateButton">Rotate</button>
+        <button class="playerShips-button nextButton">Next</button>
+      </div>
+    </div>
+  </div>
+  <button id="startButton">Start</button>
+</body>
+
+</html>

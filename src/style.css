@@ -13,7 +13,7 @@ body {
 
 #messageBox {
   margin: 20px auto;
-  width: 20rem;
+  width: 30rem;
   height: 10vh;
   border: 2px solid black;
   font-size: 3rem;
@@ -31,6 +31,7 @@ body {
 
 .boardTitle {
   margin-bottom: 10px;
+  font-size: 1.5rem;
 }
 
 .gameBoard {
@@ -125,9 +126,16 @@ body {
   background-color: darkgrey;
 }
 
+.gameBoard-grid.bePlacedShip {
+  background-color: darksalmon;
+}
+
+.gameBoard-grid.bePlacedSpace {
+  background-color: grey;
+}
+
 .gameBoard-grid.canPlace {
   background-color: rgb(29 255 155 / 76%);
-  /* border-color: rgb(29 255 155 / 76%); */
 }
 
 .gameBoard-grid.canNotPlace {
@@ -136,8 +144,8 @@ body {
 
 #startButton {
   border: 2px solid black;
-  font-size: 2rem;
-  width: 10rem;
+  font-size: 3rem;
+  width: 15rem;
   padding: 5px 20px;
   margin: auto;
   cursor: pointer;
@@ -151,19 +159,21 @@ body {
 
 #startButton:disabled {
   border-color: rgb(173, 171, 171);
+  cursor: not-allowed;
 }
 
 @media (max-width:1315px) {
   #messageBox {
     margin: 20px auto;
-    width: 20rem;
+    width: 25rem;
     height: 8vh;
     border: 2px solid black;
     font-size: 2.7rem;
     line-height: 8vh;
   }
 
-  .gameBoard {
+  .gameBoard,
+  #playerShips {
     width: 500px;
     height: 500px;
   }
@@ -174,5 +184,12 @@ body {
     display: flex;
     justify-content: center;
     align-items: flex-start;
+  }
+
+  #startButton {
+    font-size: 2rem;
+    width: 10rem;
+    padding: 5px 20px;
+    margin: 5vh auto;
   }
 }

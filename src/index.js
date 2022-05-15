@@ -1,6 +1,5 @@
 import { Game } from "./gameController";
 import Dom from "./dom";
-
 import "./style.css";
 
 const startButton = document.querySelector("#startButton");

@@ -3,7 +3,7 @@ const pcBoardElement = document.querySelector("#pcBoard");
 const messageBox = document.querySelector("#messageBox");
 const pcArea = document.querySelector("#pcArea");
 const shipsArea = document.querySelector("#shipsArea");
-
+const startButton = document.querySelector("#startButton");
 
 const createBoards = function () {
   let html = "";
@@ -80,40 +80,31 @@ const setShipsArea = function () {
     { length: 2, direction: "row", placed: false }
   ]
   let currentShipIndex = 0;
-  let checkingGrids = [];
 
   previewShip(shipsList[currentShipIndex].length, shipsList[currentShipIndex].placed);
 
   const playersGrids = playerBoardElement.querySelectorAll(".gameBoard-grid");
   playersGrids.forEach(grid => grid.addEventListener("mouseenter", checkCanPlace));
+  setMessage("Place your ships");
 
   function checkCanPlace(e) {
-    const targetX = parseInt(e.target.dataset.x);
-    const targetY = parseInt(e.target.dataset.y);
-    checkingGrids = [];
+    const [targetX, targetY] = getCoord(e.target);
+    const length = shipsList[currentShipIndex].length;
+    const direction = shipsList[currentShipIndex].direction;
+    const checkingGrids = getCheckingGrids(targetX, targetY, length, direction);
 
-    if (shipsList[currentShipIndex].direction === "row") {
-      for (let i = 0; i < shipsList[currentShipIndex].length; i++) {
-        checkingGrids.push(getGrid(targetX + i, targetY));
-      }
-    } else if (shipsList[currentShipIndex].direction === "column") {
-      for (let i = 0; i < shipsList[currentShipIndex].length; i++) {
-        checkingGrids.push(getGrid(targetX, targetY + i));
-      }
-    }
-
-    if (checkingGrids.includes(null)) {
-      checkingGrids[0].classList.add("canNotPlace");
-      checkingGrids[0].addEventListener("mouseleave", () => {
-        checkingGrids[0].classList.remove("canNotPlace");
+    if (checkingGrids.length === 0) {
+      e.target.classList.add("canNotPlace");
+      e.target.addEventListener("mouseleave", () => {
+        e.target.classList.remove("canNotPlace");
       }, { once: true });
     } else {
       checkingGrids.forEach(grid => {
         grid.classList.add("canPlace")
       });
-      checkingGrids[0].addEventListener("click", place);
-      checkingGrids[0].addEventListener("mouseleave", () => {
-        checkingGrids[0].removeEventListener("click", place);
+      e.target.addEventListener("click", place);
+      e.target.addEventListener("mouseleave", () => {
+        e.target.removeEventListener("click", place);
         checkingGrids.forEach(grid => {
           grid.classList.remove("canPlace");
         });
@@ -122,12 +113,132 @@ const setShipsArea = function () {
   }
 
   function place(e) {
+    const shipNumber = currentShipIndex + 1;
+    clearMarksWithShipNumber(shipNumber);
+    markPlacingShip(e);
+    markPlacingSpace(e);
+
+    shipsList[currentShipIndex].placed = true;
+    currentShipIndex = findUnplacedShipIndex();
+    previewShip();
+  }
+
+  function findUnplacedShipIndex() {
+    let i = 0;
+    while (i < 5 && shipsList[i].placed !== false) {
+      i++;
+    }
+    if (i < 5) return i;
+    else {
+      console.log("finish")
+      startButton.disabled = false;
+      return 0;
+    }
+  }
+
+  function markPlacingShip(e) {
     const [targetX, targetY] = getCoord(e.target);
+    const shipNumber = currentShipIndex + 1;
     const length = shipsList[currentShipIndex].length;
-    // console.log(targetX, targetY, length);
+    const direction = shipsList[currentShipIndex].direction;
+    let currentPlacing = undefined;
+
+    if (direction === "row") {
+      for (let i = 0; i < length; i++) {
+        currentPlacing = getGrid(targetX + i, targetY)
+        currentPlacing.classList.add("bePlacedShip", `ship${shipNumber}`);
+        currentPlacing.textContent = shipNumber;
+      }
+    } else if (direction === "column") {
+      for (let i = 0; i < length; i++) {
+        currentPlacing = getGrid(targetX, targetY + i);
+        currentPlacing.classList.add("bePlacedShip", `ship${shipNumber}`);
+        currentPlacing.textContent = shipNumber;
+      }
+    }
+  }
+
+  function markPlacingSpace(e) {
+    const [targetX, targetY] = getCoord(e.target);
+    const shipNumber = currentShipIndex + 1;
+    const length = shipsList[currentShipIndex].length;
+    const direction = shipsList[currentShipIndex].direction;
+    const toMarkSpace = [];
+
+    if (direction === "row") {
+      for (let i = -1; i < length + 1; i++) {
+        toMarkSpace.push(getGrid(targetX + i, targetY - 1));
+      }
+      for (let i = -1; i < length + 1; i++) {
+        toMarkSpace.push(getGrid(targetX + i, targetY + 1));
+      }
+      toMarkSpace.push(getGrid(targetX - 1, targetY));
+      toMarkSpace.push(getGrid(targetX + length, targetY));
+    } else if (direction === "column") {
+      for (let i = -1; i < length + 1; i++) {
+        toMarkSpace.push(getGrid(targetX - 1, targetY + i));
+      }
+      for (let i = -1; i < length + 1; i++) {
+        toMarkSpace.push(getGrid(targetX + 1, targetY + i));
+      }
+      toMarkSpace.push(getGrid(targetX, targetY - 1));
+      toMarkSpace.push(getGrid(targetX, targetY + length));
+    }
+
+    toMarkSpace.filter(grid => grid !== null).forEach(grid => {
+      grid.classList.add("bePlacedSpace", `ship${shipNumber}`);
+      grid.textContent = "X";
+    });
+  }
+
+  function clearMarksWithShipNumber(shipNumber) {
+    const toClear = playerBoardElement.querySelectorAll(`.ship${shipNumber}`);
+    toClear.forEach(grid => {
+      grid.classList.remove(`ship${shipNumber}`);
+      if (!isBelongSomeShip(grid)) {
+        grid.textContent = "";
+        grid.classList.remove("bePlacedShip", "bePlacedSpace");
+      }
+    });
+  }
+
+  function isBelongSomeShip(grid) {
+    const regex = /ship\d/g;
+    if (grid.className.match(regex) !== null) return true;
+    return false;
+  }
+
+  function justBelongCurrentShip(grid) {
+    const regex = /ship\d/g;
+    const belongShips = grid.className.match(regex);
+    if (belongShips.length === 1 && belongShips[0] === `ship${currentShipIndex + 1}`) return true;
+    return false
+  }
+
+  function getCheckingGrids(x, y, length, direction) {
+    const checking = [];
+    let currentGrid = undefined;
+
+    if (direction === "row") {
+      if (x + length > 10) return [];
+      for (let i = 0; i < length; i++) {
+        currentGrid = getGrid(x + i, y);
+        if (isBelongSomeShip(currentGrid) && !justBelongCurrentShip(currentGrid)) return [];
+        checking.push(currentGrid);
+      }
+    } else if (direction === "column") {
+      if (y + length > 10) return [];
+      for (let i = 0; i < length; i++) {
+        currentGrid = getGrid(x, y + i);
+        if (isBelongSomeShip(currentGrid) && !justBelongCurrentShip(currentGrid)) return [];
+        checking.push(currentGrid);
+      }
+    }
+    return checking;
   }
 
   function getGrid(x, y) {
+    if (x < 0 || y < 0 || x > 9 || y > 9) return null;
     return playerBoardElement.querySelector(`[data-x="${x}"][data-y="${y}"]`);
   }
 
@@ -139,14 +250,14 @@ const setShipsArea = function () {
   }
 
   function prevShip() {
-    if (currentShipIndex == 0) return;
-    currentShipIndex--;
+    if (currentShipIndex == 0) currentShipIndex = 4;
+    else currentShipIndex--;
     previewShip();
   }
 
   function nextShip() {
-    if (currentShipIndex == 4) return;
-    currentShipIndex++;
+    if (currentShipIndex == 4) currentShipIndex = 0;
+    else currentShipIndex++;
     previewShip();
   }
 
@@ -165,7 +276,8 @@ const setShipsArea = function () {
     shipNumberDisplay.innerHTML = currentShipIndex + 1;
     for (let i = 0; i < shipsList[currentShipIndex].length; i++) {
       ship.innerHTML +=
-        `<div class=${shipsList[currentShipIndex].placed ? "placed" : "unplaced"}></div>`;
+        `<div class=${shipsList[currentShipIndex].placed ? "placed" : "unplaced"}>
+        </div>`;
     }
     if (shipsList[currentShipIndex].direction === "row") {
       ship.classList.add("rotated");

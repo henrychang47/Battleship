@@ -54,8 +54,7 @@ body {
 }
 
 #pcArea {
-  /* transform: scale(0); */
-  /* display: none; */
+  display: none;
 }
 
 #shipsArea {
@@ -118,20 +117,20 @@ body {
   background-color: cornflowerblue;
 }
 
-.gameBoard-grid.hit {
-  background-color: darksalmon;
-}
-
-.gameBoard-grid.miss {
-  background-color: darkgrey;
-}
-
 .gameBoard-grid.bePlacedShip {
   background-color: darksalmon;
 }
 
 .gameBoard-grid.bePlacedSpace {
   background-color: grey;
+}
+
+.gameBoard-grid.hit {
+  background-color: rgb(250, 17, 5);
+}
+
+.gameBoard-grid.miss {
+  background-color: darkgrey;
 }
 
 .gameBoard-grid.canPlace {
@@ -142,7 +141,8 @@ body {
   background-color: rgb(255 29 29 / 76%);
 }
 
-#startButton {
+#startButton,
+#reStartButton {
   border: 2px solid black;
   font-size: 3rem;
   width: 15rem;
@@ -151,13 +151,16 @@ body {
   cursor: pointer;
   background-color: white;
   transition: transform 0.2s;
+  display: none;
 }
 
-#startButton:hover {
+#startButton:hover,
+#reStartButton:hover {
   transform: scale(1.1);
 }
 
-#startButton:disabled {
+#startButton:disabled,
+#reStartButton:disabled {
   border-color: rgb(173, 171, 171);
   cursor: not-allowed;
 }
@@ -186,7 +189,8 @@ body {
     align-items: flex-start;
   }
 
-  #startButton {
+  #startButton,
+  #reStartButton {
     font-size: 2rem;
     width: 10rem;
     padding: 5px 20px;

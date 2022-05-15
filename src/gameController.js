@@ -3,17 +3,23 @@ import Dom from "./dom";
 
 export class Game {
   constructor() {
-    var playerBoard = gameBoardFactory();
-    var pcBoard = gameBoardFactory();
-    this.player = playerFactory("human", pcBoard);
-    this.pc = playerFactory("pc", playerBoard);
-    this.stage = "playerTurn";
     Dom.createBoards();
-    Dom.showShipsArea();
+    Dom.setButtons(this.start, this.startPlace);
   }
 
-  start() {
-    this.placeTheShips();
+  startPlace = () => {
+    Dom.createBoards();
+    Dom.showShipsArea();
+    Dom.setShipsArea(this.start);
+  }
+
+  start = (playerPlacedList) => {
+    Dom.cleanAllSpaceMarks();
+    Dom.showPcArea();
+    this.player = playerFactory("human", gameBoardFactory());
+    this.pc = playerFactory("pc", gameBoardFactory());
+    this.stage = "playerTurn";
+    this.placeTheShips(playerPlacedList);
     Dom.setPlayerAttack(this.playerAttack);
     Dom.setMessage("Your turn");
   }
@@ -47,7 +53,7 @@ export class Game {
     }
   }
 
-  placeTheShips() {
+  placeTheShips(playerPlacedList) {
     this.player.enemysBoard.placeShip(1, 0, 0, "row");
     this.player.enemysBoard.placeShip(2, 0, 2, "column");
     this.player.enemysBoard.placeShip(3, 2, 2, "column");
@@ -55,13 +61,14 @@ export class Game {
     this.player.enemysBoard.placeShip(5, 7, 2, "column");
     // this.player.enemysBoard.printBoard();
 
-    this.pc.enemysBoard.placeShip(1, 0, 0, "row");
-    this.pc.enemysBoard.placeShip(2, 0, 2, "column");
-    this.pc.enemysBoard.placeShip(3, 2, 2, "column");
-    this.pc.enemysBoard.placeShip(4, 4, 2, "column");
-    this.pc.enemysBoard.placeShip(5, 7, 2, "column");
+    // this.pc.enemysBoard.placeShip(1, 0, 0, "row");
+    // this.pc.enemysBoard.placeShip(2, 0, 2, "column");
+    // this.pc.enemysBoard.placeShip(3, 2, 2, "column");
+    // this.pc.enemysBoard.placeShip(4, 4, 2, "column");
+    // this.pc.enemysBoard.placeShip(5, 7, 2, "column");
     // this.pc.enemysBoard.printBoard();
+    playerPlacedList.forEach(ship => {
+      this.pc.enemysBoard.placeShip(ship.shipNumber, ship.x, ship.y, ship.direction);
+    });
   }
-
-
 }

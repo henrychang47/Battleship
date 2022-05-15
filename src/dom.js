@@ -4,6 +4,17 @@ const messageBox = document.querySelector("#messageBox");
 const pcArea = document.querySelector("#pcArea");
 const shipsArea = document.querySelector("#shipsArea");
 const startButton = document.querySelector("#startButton");
+const reStartButton = document.querySelector("#reStartButton");
+var playerPlacedList = [];
+var removeCheckCanPlaceEvent;
+
+const setButtons = function (startGame, startPlace) {
+  startButton.addEventListener("click", () => {
+    startGame(playerPlacedList)
+    removeCheckCanPlaceEvent();
+  });
+  reStartButton.addEventListener("click", startPlace);
+}
 
 const createBoards = function () {
   let html = "";
@@ -58,8 +69,16 @@ const setMessage = function (msg) {
 
 const showShipsArea = function () {
   pcArea.style.display = "none";
+  reStartButton.style.display = "none";
   shipsArea.style.display = "block";
+  startButton.style.display = "block";
+}
 
+const showPcArea = function () {
+  pcArea.style.display = "block";
+  reStartButton.style.display = "block";
+  shipsArea.style.display = "none";
+  startButton.style.display = "none";
 }
 
 const setShipsArea = function () {
@@ -85,6 +104,9 @@ const setShipsArea = function () {
 
   const playersGrids = playerBoardElement.querySelectorAll(".gameBoard-grid");
   playersGrids.forEach(grid => grid.addEventListener("mouseenter", checkCanPlace));
+  removeCheckCanPlaceEvent = () => {
+    playersGrids.forEach(grid => grid.removeEventListener("mouseenter", checkCanPlace));
+  }
   setMessage("Place your ships");
 
   function checkCanPlace(e) {
@@ -102,7 +124,7 @@ const setShipsArea = function () {
       checkingGrids.forEach(grid => {
         grid.classList.add("canPlace")
       });
-      e.target.addEventListener("click", place);
+      e.target.addEventListener("click", place, { once: true });
       e.target.addEventListener("mouseleave", () => {
         e.target.removeEventListener("click", place);
         checkingGrids.forEach(grid => {
@@ -156,6 +178,13 @@ const setShipsArea = function () {
         currentPlacing.textContent = shipNumber;
       }
     }
+
+    playerPlacedList[currentShipIndex] = {
+      shipNumber: currentShipIndex + 1,
+      x: targetX,
+      y: targetY,
+      direction: direction,
+    };
   }
 
   function markPlacingSpace(e) {
@@ -287,13 +316,23 @@ const setShipsArea = function () {
   }
 }
 
+function cleanAllSpaceMarks() {
+  const spaceMarks = playerBoardElement.querySelectorAll(".bePlacedSpace");
+  spaceMarks.forEach(grid => {
+    grid.classList.remove("bePlacedSpace");
+    grid.textContent = "";
+  });
+}
 
 export default {
+  setButtons,
   createBoards,
   setPlayerAttack,
   updatePcBoard,
   updatePlayerBoard,
   setMessage,
+  showPcArea,
   showShipsArea,
-  setShipsArea
+  setShipsArea,
+  cleanAllSpaceMarks,
 };
